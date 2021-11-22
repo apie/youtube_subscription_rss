@@ -6,6 +6,8 @@ import feedparser
 import dateparser
 import feedgenerator
 import datetime
+from sys import argv
+from os import path
 
 
 RSS_BASE_USER = 'https://www.youtube.com/feeds/videos.xml?user='
@@ -54,10 +56,10 @@ def write_complete_rss_for_channels(channels, filename):
             pubdate=item['published_datetime'],
             author_name=item['author'],
         )
-    with open(filename, 'w') as f:
+    with open(path.join(path.dirname(path.realpath(argv[0])), filename), 'w') as f:
         feed.write(f, encoding='utf-8')
 
 if __name__ == '__main__':
-    with open('channels.txt') as c:
+    with open(path.join(path.dirname(path.realpath(argv[0])), 'channels.txt')) as c:
         channels = c.readlines()
     write_complete_rss_for_channels(channels, 'youtube_subscriptions_complete.rss')

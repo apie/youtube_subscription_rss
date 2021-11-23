@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # Gets user or channel link from your subscription page
+#By Apie 2021-11-22
 
 # URL = 'https://www.youtube.com/feed/channels'
 #TODO automatic retrieve, for now use a downloaded HTML file.

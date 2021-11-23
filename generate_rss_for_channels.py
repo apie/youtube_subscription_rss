@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #Read channels.txt and get RSS for each.
 #Generate one single RSS for all channels combined.
+#By Apie 2021-11-22
 import requests
 import feedparser
 import dateparser

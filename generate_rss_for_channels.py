@@ -7,10 +7,14 @@ import feedparser
 import dateparser
 import feedgenerator
 import datetime
+import shelve
 from sys import argv
 from os import path
+from lxml import html
 
 
+SCRIPT_DIR = path.dirname(path.realpath(__file__))
+DB_FILE = path.join(SCRIPT_DIR, 'rss_urls.db')
 RSS_BASE_USER = 'https://www.youtube.com/feeds/videos.xml?user='
 RSS_BASE_CHANNEL = 'https://www.youtube.com/feeds/videos.xml?channel_id='
 NOW = datetime.datetime.now(datetime.timezone.utc)
@@ -20,16 +24,34 @@ ONE_YEAR_AGO = NOW - datetime.timedelta(weeks=52)
 CUTOFF = ONE_YEAR_AGO
 session = requests.Session()
 
+def _channel_url_to_rss_url(channel_url):
+    # https://stackoverflow.com/questions/66934826/accept-cookies-consent-from-youtube
+    response = session.get(channel_url, timeout=3, cookies={'CONSENT': 'YES+1'})
+    response.raise_for_status()
+    doc = html.fromstring(response.text)
+    rss_url = doc.xpath('//link[@type="application/rss+xml"]/@href')[0]
+    return rss_url
+
+def channel_url_to_rss_url(url):
+    with shelve.open(DB_FILE) as db:
+        try:
+            chan_id = db[url]
+        except KeyError:
+            db[url] = _channel_url_to_rss_url(url)
+            chan_id = db[url]
+    return chan_id
 
 def yield_channel_entry(channel_url):
     if '/user/' in channel_url:
         username = channel_url.split('/user/')[1]
         rss_url = RSS_BASE_USER + username
-    else:
+    elif '/channel/' in channel_url:
         channel_id = channel_url.split('/channel/')[1]
         rss_url = RSS_BASE_CHANNEL + channel_id
-    response = session.get(channel_url, timeout=3)
-    response.raise_for_status()
+    elif '/@' in channel_url:
+        rss_url = channel_url_to_rss_url(channel_url)
+    else:
+        raise NotImplementedError('Unknown channel url type')
     feed = feedparser.parse(rss_url)
     for i, entry in enumerate(feed.entries):  # Sorted on publish date
         entry['published_datetime'] = dateparser.parse(entry['published'])

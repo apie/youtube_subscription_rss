@@ -1,5 +1,6 @@
 channels.txt
 *.html
 *.rss
+*.db
 update.fish
 venv/

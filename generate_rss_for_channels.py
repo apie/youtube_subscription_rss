@@ -16,6 +16,8 @@ RSS_BASE_CHANNEL = 'https://www.youtube.com/feeds/videos.xml?channel_id='
 NOW = datetime.datetime.now(datetime.timezone.utc)
 TWO_WEEKS_AGO = NOW - datetime.timedelta(weeks=2)
 TWO_YEARS_AGO = NOW - datetime.timedelta(weeks=100)
+ONE_YEAR_AGO = NOW - datetime.timedelta(weeks=52)
+CUTOFF = ONE_YEAR_AGO
 session = requests.Session()
 
 
@@ -31,7 +33,7 @@ def yield_channel_entry(channel_url):
     feed = feedparser.parse(rss_url)
     for i, entry in enumerate(feed.entries):  # Sorted on publish date
         entry['published_datetime'] = dateparser.parse(entry['published'])
-        if entry['published_datetime'] < TWO_YEARS_AGO:
+        if entry['published_datetime'] < CUTOFF:
             if i == 0:
                 print(f"Skipped {channel_url!r}")
                 return  # Skip whole channel since first (newest) item is too old.

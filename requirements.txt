@@ -6,19 +6,17 @@
 #
 backports-zoneinfo==0.2.1
     # via tzlocal
-certifi==2023.5.7
-    # via requests
-charset-normalizer==3.1.0
-    # via requests
 dateparser==1.1.8
     # via -r requirements.in
 feedgenerator==2.1.0
     # via -r requirements.in
 feedparser==6.0.10
     # via -r requirements.in
-idna==3.4
-    # via requests
+html5lib==1.1
+    # via mechanize
 lxml==4.9.2
+    # via -r requirements.in
+mechanize==0.4.8
     # via -r requirements.in
 python-dateutil==2.8.2
     # via dateparser
@@ -28,13 +26,13 @@ pytz==2023.3
     #   feedgenerator
 regex==2023.5.5
     # via dateparser
-requests==2.31.0
-    # via -r requirements.in
 sgmllib3k==1.0.0
     # via feedparser
 six==1.16.0
-    # via python-dateutil
+    # via
+    #   html5lib
+    #   python-dateutil
 tzlocal==5.0.1
     # via dateparser
-urllib3==2.0.2
-    # via requests
+webencodings==0.5.1
+    # via html5lib

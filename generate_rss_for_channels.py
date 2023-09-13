@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Read channels.txt and get RSS for each.
 # Generate one single RSS for all channels combined.
 # By Apie 2021-11-22
-import requests
+import mechanize
 import feedparser
 import dateparser
 import feedgenerator
@@ -22,13 +22,12 @@ TWO_WEEKS_AGO = NOW - datetime.timedelta(weeks=2)
 TWO_YEARS_AGO = NOW - datetime.timedelta(weeks=100)
 ONE_YEAR_AGO = NOW - datetime.timedelta(weeks=52)
 CUTOFF = ONE_YEAR_AGO
-session = requests.Session()
+br = mechanize.Browser()
 
 def _channel_url_to_rss_url(channel_url):
-    # https://stackoverflow.com/questions/66934826/accept-cookies-consent-from-youtube
-    response = session.get(channel_url, timeout=3, cookies={'CONSENT': 'YES+1'})
-    response.raise_for_status()
-    doc = html.fromstring(response.text)
+    br.open(channel_url)
+    response = br.response()
+    doc = html.fromstring(response.read())
     rss_url = doc.xpath('//link[@type="application/rss+xml"]/@href')[0]
     return rss_url
 

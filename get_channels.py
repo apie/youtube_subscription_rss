@@ -5,10 +5,10 @@
 # URL = 'https://www.youtube.com/feed/channels'
 # TODO automatic retrieve, for now use a downloaded HTML file.
 from lxml import html
-
+from sys import argv
 
 def get_channels():
-    with open('Channel list - YouTube.html') as html_file:
+    with open(argv[1]) as html_file:
         page = html.fromstring(html_file.read())
     return page.xpath("//a[@id='main-link']/@href")
 

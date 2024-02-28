@@ -24,14 +24,20 @@ ONE_YEAR_AGO = NOW - datetime.timedelta(weeks=52)
 CUTOFF = ONE_YEAR_AGO
 br = mechanize.Browser()
 
-def _channel_url_to_rss_url(channel_url):
+def _channel_url_to_rss_url(channel_url:str) -> str:
     br.open(channel_url)
     response = br.response()
+    if 'Voordat je verdergaat' in br.title():
+        br.select_form(action='https://consent.youtube.com/save')
+        br.submit()
+        response = br.response()
+    if 'Voordat je verdergaat' in br.title():
+        raise Exception('Cookiewall error')
     doc = html.fromstring(response.read())
     rss_url = doc.xpath('//link[@type="application/rss+xml"]/@href')[0]
     return rss_url
 
-def channel_url_to_rss_url(url):
+def channel_url_to_rss_url(url:str) -> str:
     with shelve.open(DB_FILE) as db:
         try:
             chan_id = db[url]

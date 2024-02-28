@@ -4,3 +4,4 @@ channels.txt
 *.db
 update.fish
 venv/
+deploy.bash

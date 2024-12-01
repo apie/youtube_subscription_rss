@@ -55,8 +55,10 @@ def yield_channel_entry(channel_url):
         rss_url = RSS_BASE_CHANNEL + channel_id
     elif '/@' in channel_url:
         rss_url = channel_url_to_rss_url(channel_url)
+    elif '/c/' in channel_url:
+        rss_url = channel_url_to_rss_url(channel_url)
     else:
-        raise NotImplementedError('Unknown channel url type')
+        raise NotImplementedError('Unknown channel url type', channel_url)
     feed = feedparser.parse(rss_url)
     for i, entry in enumerate(feed.entries):  # Sorted on publish date
         entry['published_datetime'] = dateparser.parse(entry['published'])

@@ -1,4 +1,14 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.14"
+# dependencies = [
+#     "dateparser",
+#     "feedgenerator",
+#     "feedparser",
+#     "lxml",
+#     "mechanize",
+# ]
+# ///
 # Read channels.txt and get RSS for each.
 # Generate one single RSS for all channels combined.
 # By Apie 2021-11-22
@@ -8,6 +18,7 @@ import dateparser
 import feedgenerator
 import datetime
 import shelve
+import dbm.sqlite3
 from sys import argv
 from os import path
 from lxml import html
@@ -38,7 +49,7 @@ def _channel_url_to_rss_url(channel_url:str) -> str:
     return rss_url
 
 def channel_url_to_rss_url(url:str) -> str:
-    with shelve.open(DB_FILE) as db:
+    with shelve.Shelf(dbm.sqlite3.open(DB_FILE, 'c')) as db:
         try:
             chan_id = db[url]
         except KeyError:

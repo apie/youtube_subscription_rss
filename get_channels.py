@@ -1,4 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.14"
+# dependencies = [
+#     "lxml",
+# ]
+# ///
 # Gets user or channel link from your subscription page
 # By Apie 2021-11-22
 

@@ -5,3 +5,4 @@ channels.txt
 update.fish
 venv/
 deploy.bash
+*.bak
